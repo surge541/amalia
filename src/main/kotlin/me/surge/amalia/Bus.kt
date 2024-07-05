@@ -1,10 +1,12 @@
 package me.surge.amalia
 
 import me.surge.amalia.handler.*
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
 
 class Bus {
 
-    private val handlers = mutableMapOf<Any, MutableList<MethodHandler>>()
+    private val handlers = ConcurrentHashMap<Any, CopyOnWriteArrayList<MethodHandler>>()
 
     fun subscribe(obj: Any) {
         if (handlers.containsKey(obj)) {
@@ -28,7 +30,7 @@ class Bus {
                 val handler = MethodHandler(obj, parameters[0].type.kotlin, method)
 
                 if (!handlers.containsKey(obj)) {
-                    handlers[obj] = mutableListOf(handler)
+                    handlers[obj] = CopyOnWriteArrayList<MethodHandler>().also { it.add(handler) }
                 } else {
                     handlers[obj]!!.add(handler)
                 }

@@ -7,11 +7,11 @@ import kotlin.reflect.KClass
 class MethodHandler(private val parent: Any, private val type: KClass<*>, private val method: Method) {
 
     var enabled = true
-    val handle = MethodHandles.lookup().unreflect(method)
+    private val handle = MethodHandles.lookup().unreflect(method).bindTo(parent)!!
 
     fun execute(event: Any) {
         if (enabled) {
-            handle.invokeWithArguments(parent, event)
+            handle.invokeWithArguments(event)
         }
     }
 
